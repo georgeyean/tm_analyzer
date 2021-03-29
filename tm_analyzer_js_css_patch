@@ -1,0 +1,47 @@
+<style>
+.keys_books{display:none;padding:10px;}
+.sup_keys_book, .sub_keys_book{text-decoration: underline;}
+.run_wrap{padding:20px;}
+.sub_wrap, .img_wrap, .topics_header{margin-left:10px;padding:10px;}
+.sup_keys,.sub_keys, .run_title, .img_btn, .topic_btn{padding:3px;margin:5px;}
+.keys,.sup_keys_book,.sub_keys_book,.img_btn, .topic_btn{cursor:pointer;}
+.run_title{font-size:20px;}
+.adown{border: solid black;border-width: 0 3px 3px 0;display: inline-block;padding: 3px;transform: rotate(45deg);-webkit-transform: rotate(45deg);}
+.intro{margin: 20px;padding: 10px;}
+a{color:#797f90 !important;}
+</style>
+<script>
+$( document ).ready(function() {
+  $(".sup_keys, .sub_keys").find(".keys").click(function() {    
+    if($(this).parent().find(".keys_books").is(":visible"))      
+      $(this).parent().find(".keys_books").hide();    
+    else      
+      $(this).parent().find(".keys_books").show();   
+  }); 
+  
+  $(".sup_keys_book").click(function() {
+    var link=$("#book_rootlink").attr("val");
+    var book = $(this).attr("val");
+    var booklink = link+"Word final_clean/"+book;
+    window.open(booklink,'_blank');
+  });
+  
+  $('body').click(function(e){
+       var Elem = e.target;
+       if (Elem.className=='sub_keys_book'){
+          var link=$("#book_rootlink").attr("val");
+          var book = $(Elem).attr("val");
+          var booklink = link+"short_texts/"+book;
+          window.open(booklink,'_blank');
+       }
+  });
+
+  $(".img_btn").click(function() {
+    var link=$("#book_rootlink").attr("val");
+    var pic = $(this).html();
+    var piclink = link+"graph/"+pic;
+    window.open(piclink,'_blank');
+  });  
+  
+});
+</script>
