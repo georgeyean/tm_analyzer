@@ -14,7 +14,7 @@ The tm_analyzer provides a visualized web GUI-based analytical tool for one or a
 
 ## Usage: 
 
-In replication.R, simply modify as you wish:
+Modify replication.R accordingly for your own needs. Secifically, you need:
 
 modify your sup and sub range
 ```javascript
@@ -27,7 +27,7 @@ run parallel jobs
 models <- parallel_worker_batch(process_tdm, param_list, corenum=8)
 ```
 
-lauch analyzer for models
+lauch analyzer for returned models
 ```javascript
 tm_analyzer(models, sup_range, sub_range, un_docs, book_info[, 2], tdm8, sup_tdm8)
 ```
