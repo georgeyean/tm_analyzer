@@ -66,13 +66,13 @@ tm_analyzer(models, sup_range, sub_range, un_docs, book_info[, 2], tdm8, sup_tdm
 ```
 <br/>
 <br/>
-When parallelworker starts, all logs for each process will be redirected to a socket console:
+When parallelworker starts, all logs for each process will be redirected to a socket console:<br/><br/>
 
  <img src="https://github.com/georgeyean/tm_analyzer/blob/main/images/log.png" width="600">
  
 <br/>
 <br/>
-Here's the final GUI:
+Here's the final GUI:<br/><br/>
 
  <img src="https://github.com/georgeyean/tm_analyzer/blob/main/images/log.png" width="600">
 
