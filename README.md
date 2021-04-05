@@ -17,7 +17,7 @@ The tm_analyzer provides a visualized web GUI-based analytical tool for one or a
 1. The web GUI for quanlitative analysis by associating documents and sub-documents with the nested topics.  
 
 1. Output latex format of topics.  
-
+<br/><br/>
 
 ## Usage: 
 
