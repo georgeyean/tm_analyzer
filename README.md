@@ -15,13 +15,13 @@ The tm_analyzer provides a visualized web GUI-based analytical tool for one or a
 Usage: 
 1. in replication.R, simply modify as you wish:
 
-##modify your sup and sub range
-sup_range <- c(3:5)
-sub_range <- c(48:55)
-##run parallel jobs
-models <- parallel_worker_batch(process_tdm, param_list, corenum=8)
-##lauch analyzer for models
-tm_analyzer(models, sup_range, sub_range, un_docs, book_info[, 2], tdm8, sup_tdm8)
+modify your sup and sub range
+  sup_range <- c(3:5)
+  sub_range <- c(48:55)
+run parallel jobs
+  models <- parallel_worker_batch(process_tdm, param_list, corenum=8)
+lauch analyzer for models
+  tm_analyzer(models, sup_range, sub_range, un_docs, book_info[, 2], tdm8, sup_tdm8)
 
 
 
