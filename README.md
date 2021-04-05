@@ -10,6 +10,8 @@ extends the "nested topic model" from:
 
 The tm_analyzer provides a visualized web GUI-based analytical tool for one or a list of models passed in, with features including:   
 
+1. Parallel computing for mutiple model runs and bootstrap runs.
+
 1. Search for the optimal model based on Semantic Coherence and Exclusivity metrics.  
 
 1. The web GUI for quanlitative analysis by associating documents and sub-documents with the nested topics.  
