@@ -17,8 +17,8 @@ The tm_analyzer provides a visualized web GUI-based analytical tool for one or a
 1. in replication.R, simply modify as you wish:
 
 modify your sup and sub range
-`<addr>` sup_range <- c(3:5)
->>sub_range <- c(48:55)
+`sup_range <- c(3:5)`
+`sub_range <- c(48:55)`
 
 run parallel jobs
 >>models <- parallel_worker_batch(process_tdm, param_list, corenum=8)
