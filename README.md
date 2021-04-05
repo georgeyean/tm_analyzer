@@ -16,6 +16,22 @@ The tm_analyzer provides a visualized web GUI-based analytical tool for one or a
 
 Modify replication.R accordingly for your own needs. Secifically, you need:
 
+wrap the core machine learning logic within a fuction to be called by parallelworker, like this:
+process_tdm <-function(is, js, sup_docs, sub_docs){
+```javascript  
+      pw_log("starting (%d, %d) %s", is, js, getwd())
+  
+      ##Replicating the model run
+      set.seed(3991260)
+      pw_log(format(Sys.time(), "%a %b %d %X %Y"))
+      g_60_c_4<- exp.agenda.vonmon(normed, authors, is, js, verbose=T, kappa= 1000)
+      pw_log("Finishing (%d, %d)", is, js)
+      pw_log(format(Sys.time(), "%a %b %d %X %Y"))
+          
+      return(g_60_c_4)
+} 
+```
+
 modify your sup and sub range
 ```javascript
 sup_range <- c(3:5)
