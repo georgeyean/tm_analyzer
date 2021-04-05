@@ -6,7 +6,7 @@ extends the "nested topic model" from:
 > Blaydes, Lisa; Grimmer, Justin; McQueen, Alison. 2017. "Mirrors for Princes and Sultans:Advice on the Art of Governance in the Medieval Christian and Islamic Worlds". Journal of Politics
 > https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/CV9AYE  
 
-
+<br/><br/>
 
 The tm_analyzer provides a visualized web GUI-based analytical tool for one or a list of models passed in, with features including:   
 
