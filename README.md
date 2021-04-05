@@ -32,7 +32,7 @@ lauch analyzer for models
 tm_analyzer(models, sup_range, sub_range, un_docs, book_info[, 2], tdm8, sup_tdm8)
 ```
 
- <img src="https://github.com/georgeyean/tm_analyzer/blob/main/images/log.png" width="300">
+ <img src="https://github.com/georgeyean/tm_analyzer/blob/main/images/log.png" width="500">
 
 
 
