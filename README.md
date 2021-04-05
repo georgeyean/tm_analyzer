@@ -12,7 +12,8 @@ The tm_analyzer provides a visualized web GUI-based analytical tool for one or a
 1. Output latex format of topics.  
 
 
-Usage: 
+## Usage: 
+
 1. in replication.R, simply modify as you wish:
 
 modify your sup and sub range
