@@ -19,6 +19,11 @@ The tm_analyzer provides a visualized web GUI-based analytical tool for one or a
 
 ## Usage: 
 
+Environment:
+I have been using Mac for most of the time, but it should be compatible with Linux.
+For Windows, you can try the code, and fix platform-related errors accordingly. It should be fairly straightforward.
+
+
 Modify replication.R accordingly for your own needs. Secifically, you need to pay attetion to these places:
 
 wrap the core machine learning logic within a fuction to be called by parallelworker, like this:
@@ -57,7 +62,11 @@ tm_analyzer(models, sup_range, sub_range, un_docs, book_info[, 2], tdm8, sup_tdm
 When parallelworker starts, all logs for each process will be redirected to a socket console:
 
  <img src="https://github.com/georgeyean/tm_analyzer/blob/main/images/log.png" width="600">
+ 
 
+Here's the final GUI:
+
+ <img src="https://github.com/georgeyean/tm_analyzer/blob/main/images/log.png" width="600">
 
 
 
