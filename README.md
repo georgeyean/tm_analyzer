@@ -47,13 +47,16 @@ process_tdm <-function(is, js, sup_docs, sub_docs){
 } 
 ```
 <br/>
+
 Modify your sup and sub range
+
 ```javascript
 sup_range <- c(3:5)
 sub_range <- c(48:55)
 ```
 
 run parallel jobs
+
 ```javascript
 models <- parallel_worker_batch(process_tdm, param_list, corenum=8)
 ```
@@ -66,12 +69,14 @@ tm_analyzer(models, sup_range, sub_range, un_docs, book_info[, 2], tdm8, sup_tdm
 ```
 <br/>
 <br/>
+
 When parallelworker starts, all logs for each process will be redirected to a socket console:<br/><br/>
 
  <img src="https://github.com/georgeyean/tm_analyzer/blob/main/images/log.png" width="600">
  
 <br/>
 <br/>
+
 Here's the final GUI:<br/><br/>
 
  <img src="https://github.com/georgeyean/tm_analyzer/blob/main/images/log.png" width="600">
