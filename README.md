@@ -58,16 +58,20 @@ run parallel jobs
 models <- parallel_worker_batch(process_tdm, param_list, corenum=8)
 ```
 <br/>
-Lauch analyzer for returned models
+
+Lauch analyzer for returned models<br/>
+
 ```javascript
 tm_analyzer(models, sup_range, sub_range, un_docs, book_info[, 2], tdm8, sup_tdm8)
 ```
+<br/>
 <br/>
 When parallelworker starts, all logs for each process will be redirected to a socket console:
 
  <img src="https://github.com/georgeyean/tm_analyzer/blob/main/images/log.png" width="600">
  
-
+<br/>
+<br/>
 Here's the final GUI:
 
  <img src="https://github.com/georgeyean/tm_analyzer/blob/main/images/log.png" width="600">
