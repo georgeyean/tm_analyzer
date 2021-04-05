@@ -26,9 +26,9 @@ Environment:
 > For Windows, you can try the code, and fix platform-related errors accordingly. It should be fairly straightforward.
 
 
-Modify replication.R accordingly for your needs. Secifically, look at these places:
+Modify replication.R accordingly for your needs. Secifically, look at these places as below.
 
-wrap the core machine learning logic within a fuction to be called by parallelworker, like this:
+You can wrap the core machine learning logic within a fuction to be called by parallelworker, like this:
 ```javascript 
 process_tdm <-function(is, js, sup_docs, sub_docs){
  
@@ -45,7 +45,7 @@ process_tdm <-function(is, js, sup_docs, sub_docs){
 } 
 ```
 
-modify your sup and sub range
+Modify your sup and sub range
 ```javascript
 sup_range <- c(3:5)
 sub_range <- c(48:55)
@@ -56,7 +56,7 @@ run parallel jobs
 models <- parallel_worker_batch(process_tdm, param_list, corenum=8)
 ```
 
-lauch analyzer for returned models
+Lauch analyzer for returned models
 ```javascript
 tm_analyzer(models, sup_range, sub_range, un_docs, book_info[, 2], tdm8, sup_tdm8)
 ```
