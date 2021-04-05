@@ -4,7 +4,7 @@
 #' BLAYDES, L., GRIMMER, J., MCQUEEN, A. "Mirrors for Princes and Sultans: Advice on the Art of Governance 
 #' in the Medieval Christian and Islamic Worlds. Journal of Politics.
 #' 
-#'  @author George Yean (george.yean@mail.mcgill.ca)
+#'  @author George Yean (george.yean@mail.mcgill.ca/georgeyean@gmail.com)
 #'  
 #' Current features include:
 #' 1. Search for the best model based on exclusivity and semantic coherence
@@ -15,38 +15,79 @@ source('tm_analyzer_latex.R')
 source('tm_analyzer_html.R')
 source('tm_analyzer_searchModel.R')
 
-tma_dir <- "tm_analyzer"
+.GlobalEnv$tma_dir <- "tm_analyzer"
+graph_dir <- .GlobalEnv$graph_dir <- paste0(.GlobalEnv$tma_dir, "/graph")
 
-##
-# Main function for building the analyzer
-##
-tm_analyzer <- function(models, sup_range, sub_range, sup_docs, sub_docs, tdm=NULL, sup_tdm=NULL){
+## 
+#' @title tm_analyzer
+#' @description
+#' Main function for building the analyzer
+#' @param models model list for analysis
+#' @param sup_range range of super topics
+#' @param sub_range range of sub topics
+#' @param sup_docs list of super documents
+#' @param sub_docs list of segment documents
+#' @param tdm term document matrix
+#' @param sup_tdm
+tm_analyzer <- function(models=NULL, sup_range=0, sub_range=0, sup_docs=NULL, sub_docs=NULL, tdm=NULL, sup_tdm=NULL){
+     
+    if (is.null(models))
+        stop("models needed!")
+    if (sup_range == 0)
+        stop("sup_range needed!")
+    if (sup_range == 0)
+        stop("sup_range needed!")
+    if (is.null(sup_docs))
+        stop("sup_docs needed!")
+    if (is.null(sub_docs))
+        stop("sub_docs needed!")
   
     ## remove and recreate graph directory
-    unlink(paste(tma_dir, "graph", "/"), recursive=TRUE)
-    dir.create(paste(tma_dir, "graph", "/"))
-    
-    ## parse models to output
-    if (!is.list(models)) {
-        model <- models
-        tm_analyzer_output(models, sup_docs, sub_docs)
-    } else {
-        for (model in models) {
-          tm_analyzer_output(model, sup_docs, sub_docs)
-        }
-    }
+    unlink(tma_dir, recursive=TRUE)
+    dir.create(tma_dir)
+    dir.create(paste(tma_dir, "graph", sep="/"))
     
     ## search optimal model
     searchModel(models, tdm, sub=1)
     searchModel(models, sup_tdm, sub=0)
+    
+
+    ######## Build HTML GUI ##############################
+    pw_log("Bulding GUI")
+    html_top(sup_range, sub_range)
+    
+    ## parse models to html and latex output
+    if (!is.list(models)) {
+        model <- models
+        tm_analyzer_output(model, sup_range, sub_range, sup_docs, sub_docs)
+        html_main_output(model, sup_docs, sub_docs)
+    } else {
+        for (model in models) {
+            tm_analyzer_output(model, sup_range, sub_range, sup_docs, sub_docs)
+            html_main_output(model, sup_docs, sub_docs)
+        }
+    }
+    html_bottom()    
 }
 
-##
+
+## 
+#' @title tm_analyzer_output
+#' @description
 # Parse models to three types of output: 
 #   1. html, 2. latex, 3. graphs
-##
-tm_analyzer_output <- function(model, sup_docs, sub_docs){
-    
+#' @param model model for output
+#' @param sup_docs
+#' @param sub_docs
+tm_analyzer_output <- function(model, sup_range=0, sub_range=0, sup_docs=NULL, sub_docs=NULL){
+
+    if (is.null(model))
+       stop("model needed!")
+    if (is.null(sup_docs))
+       stop("sup_docs needed!")
+    if (is.null(sub_docs))
+       stop("sub_docs needed!")  
+  
     ## parse the numbers of sup, sub from model
     i <- ncol(model$cs)
     j <- nrow(model$cs)   
@@ -54,16 +95,9 @@ tm_analyzer_output <- function(model, sup_docs, sub_docs){
     len <- length
     
     
-    ######## Build HTML GUI ##############################
-    Log("Bulding GUI for model(%d, %d)", i, j)
-    html_top()
-    html_main_output(model, i, j, sup_docs, sub_docs)
-    html_bottom()
-    
-    
     ######## Print Latex output ##########################
-    Log("Drawing latex table for model(%d, %d)", i, j)
-    create_output(model, i, j, sup_docs, sub_docs)
+    pw_log("Drawing latex table for model(%d, %d)", i, j)
+    create_latex_output(model, i, j, sup_docs, sub_docs)
     
     
     ######## Plot graphs #################################
@@ -73,19 +107,17 @@ tm_analyzer_output <- function(model, sup_docs, sub_docs){
     ##Figure 1
     #############
     #############
-    Log("Drawing Figure 1 for (%d, %d)", i, j)
+    pw_log("Drawing Figure 1 for (%d, %d)", i, j)
     
     ##first organizing the output to correspond with the order in the table.
-    #doc*60
-    sub_pis<- create_subs(model)
-    #doc*4
-    sup_pis<- create_sups(model, sub_pis)
+    sub_pis<- create_subs(model) #doc*sub
+    sup_pis<- create_sups(model, sub_pis) #doc*sup
     s_average<- apply(sup_pis, 2, mean)
     ords<- order(s_average, decreasing=T)
     
-    #4*10
+    #sup*10
     super_tops<- create_super_topics(model)#words in supers are auto generated
-    #60*10
+    #sub*10
     sub_tops<- create_sub_topics(model)
     ##let's put together the corresponding texts for each 
     ##putting together the topics for each section
@@ -113,10 +145,10 @@ tm_analyzer_output <- function(model, sup_docs, sub_docs){
     ##Figure 2
     ################
     ################
-    Log("Drawing Figure 2 for (%d, %d)", i, j)
+    pw_log("Drawing Figure 2 for (%d, %d)", i, j)
     
     rows = ifelse(i%%2==0, (i%/%2), (i%/%2+1))
-    pic_name2 = sprintf("graph/%d-%d-fig2.jpg", i, j)
+    pic_name2 = sprintf("%s/%d-%d-fig2.jpg", graph_dir, i, j)
     jpeg(pic_name2, type = "cairo", bg = "white", width = 1080, height = 540*rows)
     
     par(mfrow=c(rows, 2))
@@ -146,9 +178,9 @@ tm_analyzer_output <- function(model, sup_docs, sub_docs){
     ##Figure 3
     ################
     ################
-    Log("Drawing Figure 3 for (%d, %d)", i, j)
+    pw_log("Drawing Figure 3 for (%d, %d)", i, j)
     
-    pic_name3 = sprintf("graph/%d-%d-fig3.jpg", i, j)
+    pic_name3 = sprintf("%s/%d-%d-fig3.jpg", graph_dir, i, j)
     jpeg(pic_name3, type = "cairo", bg = "white", width = 1080, height = 1080)
     
     return_pis<- function(z, y){
@@ -189,9 +221,9 @@ tm_analyzer_output <- function(model, sup_docs, sub_docs){
     ##Figure 4
     ################
     ################
-    Log("Drawing Figure 4 for (%d, %d)", i, j)
+    pw_log("Drawing Figure 4 for (%d, %d)", i, j)
     
-    pic_name3 = sprintf("graph/%d-%d-fig4.jpg", i, j)
+    pic_name3 = sprintf("%s/%d-%d-fig4.jpg", graph_dir, i, j)
     jpeg(pic_name3, type = "cairo", bg = "white", width = 1080, height = 1080)      
     
     par(mfrow=c(3,1))

@@ -1,10 +1,12 @@
-##writing some function to create the information necessary 
+#' Some utility function to extract information from models
+#' One can inspect model object for dimensions of theta, cs, mus, etc.
+
 create_subs<- function(object){
   pis<- matrix(NA, nrow= nrow(object$thetas), ncol = ncol(object$thetas))
   for(z in 1:nrow(pis)){
     pis[z,]<- object$thetas[z,]/sum(object$thetas[z,])
   }
-  return(pis) #804*60, each topic's prop in each book
+  return(pis) #804*60, each topic's proportion in each book
 }
 
 create_sups<- function(object, pis){
@@ -35,5 +37,5 @@ create_super_topics<- function(object){
     part1<- object$gammas[,z] - apply(object$gammas[,-z], 1, mean)
     tops[z,]<- rownames(object$gammas)[order(part1, decreasing=T)[1:10]]
   }
-  return(tops)
+  return(tops) #4*10
 }	

@@ -1,17 +1,20 @@
-source("semanticCoherence.R")
-source("exclusivity.R")
-source("parseTopics.R")
-if(!require(ggplot2))
-  install.packages("ggplot2")
+#' Functions for searching for optimal model based on:
+#' 1. Semantic Coherence
+#' 2. Exclusivity
+#'
+
 library(ggplot2)
+source("tm_analyzer_parseTopics.R")
+
+graph_dir <- .GlobalEnv$graph_dir
 
 #' Calculate semantic coherence of topics in the a model.
-#' Refer to paper of Mimno et al 2011. 
+#' Refer to paper of Mimno et al. 2011. 
 #' 
-#' @param twm a topic by top keywords matrix.
-#' @param tdm a doc by keyword matrix.
+#' @param twm topic by top keywords matrix.
+#' @param tdm doc by keyword matrix.
 #' 
-semanticCoherence <- function(twm, tdm, M=10){
+semanticCoherence <- function(twm=NULL, tdm=NULL, M=10){
   
   #Get the Top N Words
   #top.words <- apply(beta, 1, order, decreasing=TRUE)[1:M,]
@@ -39,7 +42,7 @@ semanticCoherence <- function(twm, tdm, M=10){
     }
   }
   
-  #create a list object with the renumbered words (so now it corresponds to the rows in the table)
+  #create a list with the renumbered words (so now it corresponds to the rows in the table)
   temp <- match(as.vector(top.words),wordlist)
   labels <- split(temp, rep(1:nrow(twm), each=M))
   
@@ -60,52 +63,72 @@ semanticCoherence <- function(twm, tdm, M=10){
   return(result)
 }
 
+
+exclusivity <- function(beta, M=10, frexw=.7){
+  w <- frexw
+  #tbeta <- t(exp(model$beta$logbeta[[1]]))
+  mat <- beta/rowSums(beta) #normed by columns of beta now.
+  
+  ex <- apply(mat,2,rank)/nrow(mat)
+  fr <- apply(beta,2,rank)/nrow(mat)
+  frex<- 1/(w/ex + (1-w)/fr)
+  index <- apply(beta, 2, order, decreasing=TRUE)[1:M,]
+  out <- vector(length=ncol(beta)) 
+  for(i in 1:ncol(frex)) {
+    out[i] <- sum(frex[index[,i],i])
+  }
+  return(out)
+}
+
 #' Search prate-optimal models
-#' @param objects object finally computed
+#' @param models model list to look at
 #' @param tdm a docs by keywords matrix, see replication.R
 #' @param sub 0 means we are calculating for super topics
 #' 
-searchModel<-function(objects, tdm, sub=1){
-  if(length(objects)==0) stop("Need at least one object")
+searchModel<-function(models=NULL, tdm=NULL, sub=1){
+  if(is.null(models)) stop("models needed!")
+  if(is.null(tdm)) stop("tdm needed!")
+  if(length(models)==0) stop("Need at least one model!")
   
-  data <- data.frame(K=c(1:length(objects)), 
-                     SemanticCoherence=c(1:length(objects)), 
-                     Exclusivity=c(1:length(objects)))   
   
-  for(i in 1:length(objects)){
-    object <- objects[[i]]
+  data <- data.frame(K=c(1:length(models)), 
+                     SemanticCoherence=c(1:length(models)), 
+                     Exclusivity=c(1:length(models)))   
+  
+  for(i in 1:length(models)){
+    model <- models[[i]]
     
     if(sub){
-      tops <- create_sub_topics(object)
-      beta <- object$mus
+      tops <- create_sub_topics(model)
+      beta <- model$mus
     } else {
-      tops <- create_super_topics(object)
-      beta <- object$gammas
+      tops <- create_super_topics(model)
+      beta <- model$gammas
     }
-    print(paste("Calculating semcoh and excl for: ", sprintf("(%d,%d)", ncol(object$cs), nrow(object$cs)), "..."))
+    print(paste("Calculating semcoh and excl for: ", sprintf("(%d,%d)", ncol(model$cs), nrow(model$cs)), "..."))
     semcoh <- mean(semanticCoherence(tops, tdm))
     excl <- mean(exclusivity(beta))
     print(paste("result: ", semcoh, excl))
     
-    data$K[i] <- sprintf("(%d,%d)", ncol(object$cs), nrow(object$cs))
+    data$K[i] <- sprintf("(%d,%d)", ncol(model$cs), nrow(model$cs))
     data$SemanticCoherence[i] <- semcoh
     data$Exclusivity[i] <- excl
   } 
   
-  title <- sprintf("Exclusivity and semantic coherence, Pareto front line (%s)", ifelse(sub,"sub-topic","sup-topic"))
-  p <- ggplot(data, aes(SemanticCoherence,Exclusivity))+
+  title <- sprintf("Exclusivity and semantic coherence, Pareto front line (%s)", ifelse(sub, "sub-topic", "sup-topic"))
+  p <- ggplot(data, aes(SemanticCoherence,Exclusivity)) +
      geom_point(size = 2.5, alpha = 0.7, show.legend = FALSE) + 
      geom_text(aes(label=K), nudge_x=.01, nudge_y=ifelse(sub,.0015,.02), show.legend = FALSE) +
      geom_step(direction ="vh", show.legend = FALSE) +
      labs(x = "Semantic coherence",
           y = "Exclusivity",
-          title = title)+
+          title = title) +
      theme_bw()
-  print(p)
+  #print(p)
   #Sys.sleep(5)
   #browser()
-  pic <- sprintf("graph/sem_exc_pareto_%s.jpg", ifelse(sub,"sub","sup"))
+  pic <- sprintf("%s/sem_exc_pareto_%s.jpg", graph_dir, ifelse(sub, "sub", "sup"))
   ggsave(pic, width = 8, height = 8)
-  dev.off()
+  
   return(data)
 }
