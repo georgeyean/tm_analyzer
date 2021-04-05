@@ -30,6 +30,7 @@ semanticCoherence <- function(twm=NULL, tdm=NULL, M=10){
   rownames(cross) <- wordlist
   colnames(cross) <- wordlist
   #cross <- slam::tcrossprod_simple_triplet_matrix(t(mat))
+  
   for(i in 1:nrow(cross)){
     for(j in 1:ncol(cross)){
       ij_tdm <- tdm[, which(colnames(tdm) %in% c(wordlist[i], wordlist[j]))]
@@ -53,6 +54,7 @@ semanticCoherence <- function(twm=NULL, tdm=NULL, M=10){
     log(.01 + cross[m,l]) - log(cross[l,l] + .01)
   }
   result <- vector(length=nrow(twm))
+  
   for(k in 1:nrow(twm)) {
     grid <- expand.grid(labels[[k]],labels[[k]])
     colnames(grid) <- c("m", "l") #corresponds to original paper
@@ -60,6 +62,7 @@ semanticCoherence <- function(twm=NULL, tdm=NULL, M=10){
     calc <- apply(grid,1,sem,cross)
     result[k] <- sum(calc)
   }
+  
   return(result)
 }
 
@@ -77,6 +80,7 @@ exclusivity <- function(beta, M=10, frexw=.7){
   for(i in 1:ncol(frex)) {
     out[i] <- sum(frex[index[,i],i])
   }
+  
   return(out)
 }
 
@@ -86,6 +90,7 @@ exclusivity <- function(beta, M=10, frexw=.7){
 #' @param sub 0 means we are calculating for super topics
 #' 
 searchModel<-function(models=NULL, tdm=NULL, sub=1){
+  
   if(is.null(models)) stop("models needed!")
   if(is.null(tdm)) stop("tdm needed!")
   if(length(models)==0) stop("Need at least one model!")
@@ -96,37 +101,34 @@ searchModel<-function(models=NULL, tdm=NULL, sub=1){
                      Exclusivity=c(1:length(models)))   
   
   for(i in 1:length(models)){
-    model <- models[[i]]
-    
-    if(sub){
-      tops <- create_sub_topics(model)
-      beta <- model$mus
-    } else {
-      tops <- create_super_topics(model)
-      beta <- model$gammas
-    }
-    print(paste("Calculating semcoh and excl for: ", sprintf("(%d,%d)", ncol(model$cs), nrow(model$cs)), "..."))
-    semcoh <- mean(semanticCoherence(tops, tdm))
-    excl <- mean(exclusivity(beta))
-    print(paste("result: ", semcoh, excl))
-    
-    data$K[i] <- sprintf("(%d,%d)", ncol(model$cs), nrow(model$cs))
-    data$SemanticCoherence[i] <- semcoh
-    data$Exclusivity[i] <- excl
+      model <- models[[i]]
+      
+      if(sub){
+        tops <- create_sub_topics(model)
+        beta <- model$mus
+      } else {
+        tops <- create_super_topics(model)
+        beta <- model$gammas
+      }
+      print(paste("Calculating semcoh and excl for: ", sprintf("(%d,%d)", ncol(model$cs), nrow(model$cs)), "..."))
+      semcoh <- mean(semanticCoherence(tops, tdm))
+      excl <- mean(exclusivity(beta))
+      print(paste("result: ", semcoh, excl))
+      
+      data$K[i] <- sprintf("(%d,%d)", ncol(model$cs), nrow(model$cs))
+      data$SemanticCoherence[i] <- semcoh
+      data$Exclusivity[i] <- excl
   } 
   
   title <- sprintf("Exclusivity and semantic coherence, Pareto front line (%s)", ifelse(sub, "sub-topic", "sup-topic"))
   p <- ggplot(data, aes(SemanticCoherence,Exclusivity)) +
-     geom_point(size = 2.5, alpha = 0.7, show.legend = FALSE) + 
-     geom_text(aes(label=K), nudge_x=.01, nudge_y=ifelse(sub,.0015,.02), show.legend = FALSE) +
-     geom_step(direction ="vh", show.legend = FALSE) +
-     labs(x = "Semantic coherence",
-          y = "Exclusivity",
-          title = title) +
-     theme_bw()
-  #print(p)
-  #Sys.sleep(5)
-  #browser()
+       geom_point(size = 2.5, alpha = 0.7, show.legend = FALSE) + 
+       geom_text(aes(label=K), nudge_x=.01, nudge_y=ifelse(sub,.0015,.02), show.legend = FALSE) +
+       geom_step(direction ="vh", show.legend = FALSE) +
+       labs(x = "Semantic coherence",
+            y = "Exclusivity",
+            title = title) +
+       theme_bw()
   pic <- sprintf("%s/sem_exc_pareto_%s.jpg", graph_dir, ifelse(sub, "sub", "sup"))
   ggsave(pic, width = 8, height = 8)
   
