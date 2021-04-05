@@ -14,11 +14,12 @@ The tm_analyzer provides a visualized web GUI-based analytical tool for one or a
 
 ## Usage: 
 
-Modify replication.R accordingly for your own needs. Secifically, you need:
+Modify replication.R accordingly for your own needs. Secifically, you need to pay attetion to these places:
 
 wrap the core machine learning logic within a fuction to be called by parallelworker, like this:
+```javascript 
 process_tdm <-function(is, js, sup_docs, sub_docs){
-```javascript  
+ 
       pw_log("starting (%d, %d) %s", is, js, getwd())
   
       ##Replicating the model run
