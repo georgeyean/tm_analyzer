@@ -24,7 +24,7 @@ Environment:
 > For Windows, you can try the code, and fix platform-related errors accordingly. It should be fairly straightforward.
 
 
-Modify replication.R accordingly for your own needs. Secifically, you need to pay attetion to these places:
+Modify replication.R accordingly for your needs. Secifically, look at these places:
 
 wrap the core machine learning logic within a fuction to be called by parallelworker, like this:
 ```javascript 
