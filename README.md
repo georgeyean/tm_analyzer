@@ -79,7 +79,7 @@ When parallelworker starts, all logs for each process will be redirected to a so
 
 Here's the final GUI:<br/><br/>
 
- <img src="https://github.com/georgeyean/tm_analyzer/blob/main/images/log.png" width="600">
+ <img src="https://github.com/georgeyean/tm_analyzer/blob/main/images/gui.png" width="600">
 
 
 
