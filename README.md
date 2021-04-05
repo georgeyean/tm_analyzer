@@ -32,7 +32,7 @@ lauch analyzer for models
 tm_analyzer(models, sup_range, sub_range, un_docs, book_info[, 2], tdm8, sup_tdm8)
 ```
 
-![](images/log.png)
+![](images/log.png | width=100)
 
 
 
