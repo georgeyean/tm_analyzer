@@ -1,4 +1,4 @@
-***tm_analyzer extends the *nested topic model used in:***
+**tm_analyzer extends the *nested topic model used in:**
 
 Blaydes, Lisa; Grimmer, Justin; McQueen, Alison. 2017. "Mirrors for Princes and Sultans:Advice on the Art of Governance in the Medieval Christian and Islamic Worlds". Journal of Politics
 https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/CV9AYE  
