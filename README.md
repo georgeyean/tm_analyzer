@@ -25,8 +25,8 @@ Environment:
 > I have been using Mac for most of the time, but it should be compatible with Linux.
 > For Windows, you can try the code, and fix platform-related errors accordingly. It should be fairly straightforward.
 
-
-
+<br/>
+<br/>
 
 Modify replication.R accordingly for your needs. Secifically, look at these places as below.
 
@@ -46,7 +46,7 @@ process_tdm <-function(is, js, sup_docs, sub_docs){
       return(g_60_c_4)
 } 
 ```
-
+<br/>
 Modify your sup and sub range
 ```javascript
 sup_range <- c(3:5)
@@ -57,12 +57,12 @@ run parallel jobs
 ```javascript
 models <- parallel_worker_batch(process_tdm, param_list, corenum=8)
 ```
-
+<br/>
 Lauch analyzer for returned models
 ```javascript
 tm_analyzer(models, sup_range, sub_range, un_docs, book_info[, 2], tdm8, sup_tdm8)
 ```
-
+<br/>
 When parallelworker starts, all logs for each process will be redirected to a socket console:
 
  <img src="https://github.com/georgeyean/tm_analyzer/blob/main/images/log.png" width="600">
